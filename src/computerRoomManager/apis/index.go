@@ -24,3 +24,7 @@ func DetailApi(c *gin.Context) {
 func CheckApi(c *gin.Context) {
 	c.HTML(http.StatusOK, "check.html", gin.H{})
 }
+
+func WhatApi(c *gin.Context){
+	c.HTML(http.StatusOK,"test.html",gin.H{})
+}

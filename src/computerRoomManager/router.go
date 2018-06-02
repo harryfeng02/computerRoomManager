@@ -1,17 +1,18 @@
 package main
 
 import (
-	. "computerRoomManager/apis"
+	. "computerRoomManager/src/computerRoomManager/apis"
 
 	"github.com/gin-gonic/gin"
-	"path/filepath"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func initRouter() *gin.Engine {
 	router := gin.Default()
-	dir2:="C://Users//bingnan//computerRoomManager//src//computerRoomManager"
+
+	dir2:="D://GoPkg//src//computerRoomManager//src//computerRoomManager"
 	router.LoadHTMLGlob(filepath.Join(dir2,"htmls/*"))
 	fmt.Println(GetCurrentDirectory())
 	//登录界面
@@ -26,6 +27,8 @@ func initRouter() *gin.Engine {
 	router.GET("/detail.html", DetailApi)
 	router.GET("/yzmchange", YzmChnageapi)
 	router.GET("/check.html", CheckApi)
+
+	router.GET("/test.html",WhatApi)
 	return router
 }
 func GetCurrentDirectory() string {
