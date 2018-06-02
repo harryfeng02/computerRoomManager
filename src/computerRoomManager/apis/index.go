@@ -21,3 +21,6 @@ func HomeInitApi(c *gin.Context) {
 func DetailApi(c *gin.Context) {
 	c.HTML(http.StatusOK, "detail.html", gin.H{})
 }
+func CheckApi(c *gin.Context) {
+	c.HTML(http.StatusOK, "check.html", gin.H{})
+}

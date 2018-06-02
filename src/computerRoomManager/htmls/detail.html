@@ -58,7 +58,7 @@
   <input type="text" class="input-sm form-control" id="time_end" name="end"style="right;width:150px;display:inline-block;">
   </div>
   <label for="inputEmail3" class="control-label" style="left">人数</label>
-  <input type="text" class="form-control" id="peoplenum" name="UserV2.phone" style="right;width:150px;display:inline-block;">
+  <input type="number" class="form-control" id="peoplenum" name="UserV2.phone" style="right;width:150px;display:inline-block;">
   <input type="button" class="btn btn-primary btn_search" value="搜索" onclick="serachUser()"/>
 </div>
 
@@ -220,6 +220,9 @@
     //搜索
     function serachUser() {
         $("#userListTable").bootstrapTable('refresh');
+        if(!time_avaliable()){
+            return
+        }
         var columns=[
             {
                 title: 'ID',
@@ -268,5 +271,17 @@
             }
         ];
         a('/search',columns);
+    }
+    function time_avaliable() {
+        var beginDate=$("#time_start").val();
+        var endDate=$("#time_end").val();
+        var d1 = new Date(beginDate);
+        var d2 = new Date(endDate);
+        if(beginDate!=""&&endDate!=""&&d1 >=d2)
+        {
+            alert("开始时间不能大于结束时间！");
+            return false;
+        }
+        return true;
     }
 </script>

@@ -19,8 +19,8 @@
      <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper"role="navigation">
         <ul class="nav sidebar-nav">
           <li class="sidebar-brand"> <a href="#"> 机房管理系统 </a> </li>
-          <li> <a href="#"> <i class="fa fa-fw fa-home"> </i> 申请机房 </a> </li>
-          <li> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看申请 </a> </li>
+          <li onclick="apply()"> <a href="#"> <i class="fa fa-fw fa-home"> </i> 申请机房 </a> </li>
+          <li onclick="check()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看申请 </a> </li>
           <li> <a href="#"> <i class="fa fa-fw fa-file-o"> </i> 登出 </a> </li>
         </ul>
      </nav>
@@ -29,6 +29,12 @@
 <script type="text/javascript">
   var ifm= document.getElementById("iframe-page-content");
   ifm.height=document.documentElement.clientHeight;
+  function check(){
+      document.getElementById("iframe-page-content").src="check.html";
+  }
+  function apply(){
+      document.getElementById("iframe-page-content").src="detail.html";
+  }
 </script>
 </body>
 </html>

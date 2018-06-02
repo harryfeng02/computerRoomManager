@@ -25,6 +25,7 @@ func initRouter() *gin.Engine {
 
 	router.GET("/detail.html", DetailApi)
 	router.GET("/yzmchange", YzmChnageapi)
+	router.GET("/check.html", CheckApi)
 	return router
 }
 func GetCurrentDirectory() string {
