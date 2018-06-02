@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootstrap-table.js"></script>
+    <script src="assets/js/bootstrap-table-zh-CN.js"></script>
+    <script src="assets/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="assets/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css">
+    <link rel="stylesheet" href="assets/css/style3.css">
+    <link rel="stylesheet" href="assets/dist/css/bootstrap-datepicker3.min.css">
+</head>
+<body style="margin: 0px;background-color: #ffffff">
+<div id="wrapper" class="toggled">
+     <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper"role="navigation">
+        <ul class="nav sidebar-nav">
+          <li class="sidebar-brand"> <a href="#"> 机房管理系统 </a> </li>
+          <li> <a href="#"> <i class="fa fa-fw fa-home"> </i> 申请机房 </a> </li>
+          <li> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看申请 </a> </li>
+          <li> <a href="#"> <i class="fa fa-fw fa-file-o"> </i> 登出 </a> </li>
+        </ul>
+     </nav>
+<iframe id="iframe-page-content" src="detail.html" style="width: 100%"></iframe>
+</div>
+<script type="text/javascript">
+  var ifm= document.getElementById("iframe-page-content");
+  ifm.height=document.documentElement.clientHeight;
+</script>
+</body>
+</html>
+

@@ -1,0 +1,272 @@
+<html>
+<head>
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootstrap-table.js"></script>
+    <script src="assets/js/bootstrap-table-zh-CN.js"></script>
+    <script src="assets/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="assets/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css">
+    <link rel="stylesheet" href="assets/dist/css/bootstrap-datepicker3.min.css">
+</head>
+<!-- <div style="width: 500px;">
+<p id="page-content" class="animated fadeInRight">
+<p class="col-sm-4 col-md-3 col-lg-3" style="width: 100%;">
+    <form  id="search_User">
+<p class="panel-body search_box">
+<p class="search_p">
+    <label for="search_name">用户姓名：</label>
+    <input type="text" class="form-control" id="search_name" name="UserV2.name" >
+</p>
+<p class="search_p">
+    <label for="search_mobile">手机号：</label>
+    <input type="text" class="form-control" id="search_mobile" name="UserV2.phone" >
+</p>
+<p class="search_p">
+    <label for="search_sex">性别：</label>
+    <select class="form-control" id="search_sex" name="UserV2.sex"><option value="">---请选择---</option><option value="男">男</option><option value="女">女</option></select>
+</p>
+</p>
+<p class="panel-body search_box">
+<p class="search_p">
+    <label for="search_name">用户账号：</label>
+    <input type="text" class="form-control" id="search_username" name="UserV2.username" >
+</p>
+<p class="search_p">
+    <label for="search_name">用户Email：</label>
+    <input type="text" class="form-control" id="search_email" name="UserV2.email" >
+</p>
+<p class="search_p" style="text-align: center;">
+    <input type="button" class="btn btn-primary btn_search" value="搜索" onclick="serachUser()"/>
+</p>
+</p>
+</form>
+</p>
+</div> -->
+<div style="margin-left: 30px;margin-right: 30px;">
+<h2>申请机房</h2>
+<div class="form-group" style="margin-top: 30px" >
+  <label for="inputEmail3" class="control-label" style="left">校区</label>
+  <select class="form-control" id="search_xiaoqu" name="UserV2.sex" style="right;width:150px;display:inline-block;"><option value="">---请选择---</option><option value="翡翠湖校区">翡翠湖校区</option><option value="屯溪路校区">屯溪路校区</option></select>
+  <label for="inputEmail3" class="control-label" style="left">软件名称</label>
+  <input type="text" class="form-control" id="search_software" name="UserV2.phone" style="right;width:150px;display:inline-block;">
+  <div class="date-picker" style="right;display:inline-block;">
+  <label for="inputEmail3" class="control-label" style="left">上机时间</label>
+  <input type="text" class="input-sm form-control datepicker" id="time_start" name="start" style="right;width:150px;display:inline-block;">
+  <span >to</span>
+  <input type="text" class="input-sm form-control" id="time_end" name="end"style="right;width:150px;display:inline-block;">
+  </div>
+  <label for="inputEmail3" class="control-label" style="left">人数</label>
+  <input type="text" class="form-control" id="peoplenum" name="UserV2.phone" style="right;width:150px;display:inline-block;">
+  <input type="button" class="btn btn-primary btn_search" value="搜索" onclick="serachUser()"/>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          翡翠湖校区C402
+        </h4>
+      </div>
+      <div class="modal-body">
+        在这里添加一些文本
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">
+          申请
+        </button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal -->
+</div>
+
+
+<div style="height:auto;">
+<table id="userListTable" ></table>
+</div>
+</p></div>
+</html>
+<script>
+    $(function(){
+        var columns=[
+            {
+                title: 'ID',
+                field: 'Id',
+                align: 'center',
+                valign: 'middle',
+            },
+            {
+                title: '校区',
+                field: 'Xiaoqu',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '机房名',
+                field: 'Building',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '机房号',
+                field: 'Cpno',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '人数',
+                field: 'Peoplenum',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '操作',
+                field: 'IdTwo',
+                align: 'center',
+                formatter:function(value,row,index){
+                    var e = '<button href="#" class="btn btn-primary" data-target="#myModal" data-toggle="modal">查看</button> ';
+                    var d = '<button href="#" class="btn btn-primary"  onclick="apply(\''+ row.id + '\')">申请</button> ';
+                    return e+d;
+                }
+            }
+        ];
+        
+        //b(columns);
+
+    });
+    $('.date-picker input').datepicker({
+      language:"zh-CN",
+      autoclose: true,//选中之后自动隐藏日期选择框
+      clearBtn: true,//清除按钮
+      todayBtn: true,//今日按钮
+      format: "yyyy-mm-dd"
+    });
+    function b (columns) {
+        $('#userListTable').bootstrapTable({
+            columns: columns,
+            data: [{
+               id: 2,
+               xiaoqu: 'Item 3',
+               building: '$3',
+               cpno:"ss",
+               peoplenum:"ss",
+            },{
+               id: 2,
+               xiaoqu: 'Item 3',
+               building: '$3',
+               cpno:"ss",
+               peoplenum:"ss",
+            }]
+        })
+    }
+    function a (dataurl,columns) {
+        $('#userListTable').bootstrapTable({
+            url: dataurl,
+            method:"post",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            striped:true,//隔行变色
+            cache:false,  //是否使用缓存
+            showColumns:false,// 列
+//            toobar:'#toolbar',
+            pagination: true, //分页
+            paginationLoop:false,
+            paginationPreText:'上一页',
+            paginationNextText:'下一页',
+//            showFooter:true,//显示列脚
+//            showRefresh:true,//显示刷新
+            showPaginationSwitch:false,//是否显示数据条数选择框
+            sortable: true,           //是否启用排序
+            sortOrder:"asc",
+            sortName : 'id',
+            singleSelect: false,
+            search:false, //显示搜索框
+            buttonsAlign: "right", //按钮对齐方式
+            showRefresh:false,//是否显示刷新按钮
+            sidePagination: "server", //服务端处理分页
+            pageNumber:1,
+            pageSize:5,
+            pageList:[5,10, 25, 50, 100],
+            undefinedText:'--',
+            uniqueId: "id", //每一行的唯一标识，一般为主键列
+            queryParamsType:'',
+            queryParams: queryParams,//传递参数（*）
+            columns: columns
+        });
+        //得到查询的参数
+        function queryParams (params) {
+            var temp = {  //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                pageSize: params.pageSize,  //页面大小
+                pageNumber: params.pageNumber, //页码
+                xiaoqu: $("#search_xiaoqu").val(),//后台请求传的查询参数
+                software:$("#search_software").val(),
+                time_start:$("#time_start").val(),
+                time_end:$("#time_end").val(),
+                peoplenum:$("#peoplenum").val(),
+            };
+            return temp;
+        };
+    }
+    //搜索
+    function serachUser() {
+        $("#userListTable").bootstrapTable('refresh');
+        var columns=[
+            {
+                title: 'ID',
+                field: 'Id',
+                align: 'center',
+                valign: 'middle',
+            },
+            {
+                title: '校区',
+                field: 'Xiaoqu',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '机房号',
+                field: 'Cpno',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                //title: '楼',
+                title:"机房名",
+                field: 'Building',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '人数',
+                field: 'Peoplenum',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '操作',
+                field: 'IdTwo',
+                align: 'center',
+                formatter:function(value,row,index){
+                    var e = '<button href="#" class="btn btn-primary" data-target="#myModal" data-toggle="modal">查看</button> ';
+                    var d = '<button href="#" class="btn btn-primary"  onclick="apply(\''+ row.id + '\')">申请</button> ';
+                    return e+d;
+                }
+            }
+        ];
+        a('/search',columns);
+    }
+</script>
