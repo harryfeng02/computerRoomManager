@@ -28,6 +28,8 @@ func initRouter() *gin.Engine {
 	router.GET("/check.html", CheckApi)
 
 	router.GET("/test.html",WhatApi)
+	router.GET("/check",CheckApply)
+	router.POST("/undo",Undo)
 	return router
 }
 func GetCurrentDirectory() string {

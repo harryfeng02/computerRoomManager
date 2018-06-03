@@ -11,21 +11,63 @@
     <link rel="stylesheet" href="assets/dist/css/bootstrap-datepicker3.min.css">
 </head>
 <body>
+<!-- 模态框   信息删除确认 -->
+<div class="modal fade" id="delcfmOverhaul">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <!-- 隐藏需要删除的id -->
+                <input type="hidden" id="deleteHaulId" />
+                <p>您确认要撤销该条申请吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary"
+                        id="deleteHaulBtn" onclick="undo()">确认</button>
+            </div>
+        </div>
+    </div></div>
 	<div style="margin-left: 30px;margin-right: 30px;">
 	<h2>查看申请</h2>
 	<div style="height:auto;">
 <table id="userListTable" ></table>
 </div>
 </div>
+
 </body>
 <script>
     $(function(){
         var columns=[
             {
+                field: 'applyno',
+                visible:false,
+            },
+            {
                 title: '课程',
                 field: 'course',
                 align: 'center',
                 valign: 'middle',
+            },
+            {
+                title: '代码',
+                field: 'course_code',
+                align: 'center',
+                valign: 'middle',
+            },
+            {
+                title: '日期',
+                field: 'date',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
             },
             {
                 title: '时间',
@@ -60,22 +102,18 @@
                 field: 'id',
                 align: 'center',
                 formatter:function(value,row,index){
-                    var e = '<button href="#" class="btn btn-primary" data-target="#myModal" data-toggle="modal">修改</button> ';
-                    var d = '<button href="#" class="btn btn-danger"  onclick="apply(\''+ row.id + '\')">撤销</button> ';
-                    return e+d;
+                    var day = new Date();
+                    day.setTime(day.getTime());
+                    if(day>new Date(row["date"])){
+                        var d = '<button href="#" class="btn btn-danger disabled" >撤销</button> ';
+                    }else {
+                        var d = '<button href="#" class="btn btn-danger"  onclick="undo_confirm(\''+ index+ '\')">撤销</button> ';
+                    }
+                    return d;
                 }
             }
         ];
-        //a('./d2ata.php',columns);
-        b(columns);
-
-    });
-    $('.date-picker input').datepicker({
-      language:"zh-CN",
-      autoclose: true,//选中之后自动隐藏日期选择框
-      clearBtn: true,//清除按钮
-      todayBtn: true,//今日按钮
-      format: "yyyy-mm-dd"
+        get(columns)
     });
     function b (columns) {
         $('#userListTable').bootstrapTable({
@@ -96,14 +134,14 @@
         })
     }
 
-    function a (dataurl,columns) {
+    function a (data,columns) {
         $('#userListTable').bootstrapTable({
-            url: dataurl,
-            method:"post",
+            data:data,
+            method:"get",
             dataType: "json",
             contentType: "application/x-www-form-urlencoded",
             striped:true,//隔行变色
-            cache:false,  //是否使用缓存
+            cache:true,  //是否使用缓存
             showColumns:false,// 列
 //            toobar:'#toolbar',
             pagination: true, //分页
@@ -127,7 +165,7 @@
             undefinedText:'--',
             uniqueId: "id", //每一行的唯一标识，一般为主键列
             queryParamsType:'',
-            queryParams: queryParams,//传递参数（*）
+            //queryParams: queryParams,//传递参数（*）
             columns: columns
         });
 
@@ -146,9 +184,46 @@
         };
     }
 
-    //搜索
-    function serachUser() {
-        $("#userListTable").bootstrapTable('refresh');
+    function get(columns) {
+        $.ajax({
+            type: "GET",
+            url: "/check",
+            dataType: "json",
+            success: function (msg) {
+                a(msg,columns)
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
+    }
+    function undo_confirm(id) {
+        $("#deleteHaulBtn").val(id)
+        $("#delcfmOverhaul").modal({
+            backdrop : 'static',
+            keyboard : false
+        });
+    }
+    function undo() {
+        alert($("#deleteHaulBtn").val())
+        $("#delcfmOverhaul").modal('hide');
+        $.ajax({
+            type: "POST",
+            url: "/undo",
+            data:{
+                applyno: $("#deleteHaulBtn").val(),
+            },
+            success: function (msg) {
+                if(msg=="ok"){
+                    location.reload()
+                }else{
+                    alert("删除错误");
+                }
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
     }
 </script>
 </html>
