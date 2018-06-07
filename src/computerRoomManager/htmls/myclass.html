@@ -11,46 +11,18 @@
     <link rel="stylesheet" href="assets/dist/css/bootstrap-datepicker3.min.css">
 </head>
 <body>
-<!-- 模态框   信息删除确认 -->
-<div class="modal fade" id="delcfmOverhaul">
-    <div class="modal-dialog">
-        <div class="modal-content message_align">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-                <h4 class="modal-title">提示</h4>
-            </div>
-            <div class="modal-body">
-                <!-- 隐藏需要删除的id -->
-                <input type="hidden" id="deleteHaulId" />
-                <p>您确认要撤销该条申请吗？</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary"
-                        id="deleteHaulBtn" onclick="undo()">确认</button>
-            </div>
-        </div>
-    </div></div>
-	<div style="margin-left: 30px;margin-right: 30px;">
-	<h2>查看申请</h2>
-	<div style="height:auto;">
-<table id="userListTable" ></table>
-</div>
+
+<div style="margin-left: 30px;margin-right: 30px;">
+    <h2>查看授课</h2>
+    <div style="height:auto;">
+        <table id="userListTable" ></table>
+    </div>
 </div>
 
 </body>
 <script>
     $(function(){
         var columns=[
-            {
-                title:'dd',
-                field: 'apply',
-                visible:false
-            },
             {
                 title: '课程',
                 field: 'course',
@@ -64,8 +36,8 @@
                 valign: 'middle',
             },
             {
-                title: '日期',
-                field: 'date',
+                title: '学期',
+                field: 'semester',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
@@ -79,41 +51,32 @@
             },
             {
                 title: '校区',
-                field: 'xiaoqu',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title: '地点',
                 field: 'location',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
-                title: '申请人数',
+                title: '地点',
+                field: 'building',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '选课人数',
                 field: 'peoplenum',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
-                title: '操作',
-                field: 'id',
+                title: '学分',
+                field: 'credit',
                 align: 'center',
-                formatter:function(value,row,index){
-                    var day = new Date();
-                    day.setTime(day.getTime());
-                    var e = '<button href="#" class="btn btn-primary"  >查看</button> ';
-                    if(day>new Date(row["date"])){
-                        var d = '<button href="#" class="btn btn-danger disabled"  >撤销</button> ';
-                    }else {
-                        var d = '<button href="#" class="btn btn-danger"  onclick="undo_confirm(\''+ row["apply"]+ '\')">撤销</button> ';
-                    }
-                    return e+d;
-                }
-            }
+                valign: 'middle',
+                sortable:true,
+            },
         ];
         get(columns)
     });
@@ -121,17 +84,17 @@
         $('#userListTable').bootstrapTable({
             columns: columns,
             data: [{
-               id: 2,
-               xiaoqu: 'Item 2',
-               building: '$2',
-               cpno:"ss",
-               peoplenum:"ss",
+                id: 2,
+                xiaoqu: 'Item 2',
+                building: '$2',
+                cpno:"ss",
+                peoplenum:"ss",
             },{
-               id: 2,
-               xiaoqu: 'Item 3',
-               building: '$3',
-               cpno:"ss",
-               peoplenum:"ss",
+                id: 2,
+                xiaoqu: 'Item 3',
+                building: '$3',
+                cpno:"ss",
+                peoplenum:"ss",
             }]
         })
     }
@@ -189,38 +152,10 @@
     function get(columns) {
         $.ajax({
             type: "GET",
-            url: "/check",
+            url: "/myclass",
             dataType: "json",
             success: function (msg) {
                 a(msg,columns)
-            },
-            error: function () {
-                alert("错误");
-            }
-        });
-    }
-    function undo_confirm(id) {
-        $("#deleteHaulBtn").val(id)
-        $("#delcfmOverhaul").modal({
-            backdrop : 'static',
-            keyboard : false
-        });
-    }
-    function undo() {
-        alert($("#deleteHaulBtn").val())
-        $("#delcfmOverhaul").modal('hide');
-        $.ajax({
-            type: "POST",
-            url: "/undo",
-            data:{
-                applyno: $("#deleteHaulBtn").val(),
-            },
-            success: function (msg) {
-                if(msg=="ok"){
-                    location.reload()
-                }else{
-                    alert("删除错误");
-                }
             },
             error: function () {
                 alert("错误");

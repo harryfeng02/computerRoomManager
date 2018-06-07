@@ -47,18 +47,26 @@
 <div style="margin-left: 30px;margin-right: 30px;">
 <h2>申请机房</h2>
 <div class="form-group" style="margin-top: 30px" >
-  <label for="inputEmail3" class="control-label" style="left">校区</label>
-  <select class="form-control" id="search_xiaoqu" name="UserV2.sex" style="right;width:150px;display:inline-block;"><option value="">---请选择---</option><option value="翡翠湖校区">翡翠湖校区</option><option value="屯溪路校区">屯溪路校区</option></select>
+  <label for="inputEmail3" class="control-label" style="left;">校区</label>
+  <select class="form-control" id="search_xiaoqu" name="UserV2.sex" style="right;width:120px;display:inline-block;"><option value="">-请选择-</option><option value="翡翠湖">翡翠湖校区</option><option value="屯溪路">屯溪路校区</option></select>
   <label for="inputEmail3" class="control-label" style="left">软件名称</label>
-  <input type="text" class="form-control" id="search_software" name="UserV2.phone" style="right;width:150px;display:inline-block;">
+  <input type="text" class="form-control" id="search_software" name="UserV2.phone" style="right;width:120px;display:inline-block;">
   <div class="date-picker" style="right;display:inline-block;">
-  <label for="inputEmail3" class="control-label" style="left">上机时间</label>
-  <input type="text" class="input-sm form-control datepicker" id="time_start" name="start" style="right;width:150px;display:inline-block;">
+  <label for="inputEmail3" class="control-label" style="left">上机日期</label>
+  <input type="text" class="input-sm form-control datepicker" id="time_start" name="start" style="right;width:120px;display:inline-block;">
   <span >to</span>
-  <input type="text" class="input-sm form-control" id="time_end" name="end"style="right;width:150px;display:inline-block;">
+  <input type="text" class="input-sm form-control" id="time_end" name="end"style="right;width:120px;display:inline-block;">
   </div>
+    <div style="right;display:inline-block;">
+        <label for="inputEmail3" class="control-label" style="left">上机节数</label>
+        <select class="form-control" id="lesson_start" name="UserV2.sex" style="right;width:100px;display:inline-block;"><option value="">请选择</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select>
+        <span >to</span>
+        <select class="form-control" id="lesson_end" name="UserV2.sex" style="right;width:100px;display:inline-block;"><option value="">请选择</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select>
+    </div>
   <label for="inputEmail3" class="control-label" style="left">人数</label>
-  <input type="number" class="form-control" id="peoplenum" name="UserV2.phone" style="right;width:150px;display:inline-block;">
+  <input type="number" class="form-control" id="peoplenum" name="UserV2.phone" style="right;width:100px;display:inline-block;">
   <input type="button" class="btn btn-primary btn_search" value="搜索" onclick="serachUser()"/>
 </div>
 
@@ -71,17 +79,27 @@
           &times;
         </button>
         <h4 class="modal-title" id="myModalLabel">
-          翡翠湖校区C402
+          申请机房
         </h4>
       </div>
       <div class="modal-body">
-        在这里添加一些文本
+          <span>机房软件环境：</span> <span id="sfware">sql server</span><br><br>
+        <span>管理员：</span> <span id="mname">冯炳楠</span><br><br>
+          <span>管理员电话：</span> <span id="mphone">17356528323</span><br><br>
+          <div id="cclassinfo">
+              <label class="checkbox-inline">
+                  <input type="radio" name="optionsRadiosinline" id="optionsRadios3"
+                         value="option1" checked> 选项 1
+              </label>
+              <label class="checkbox-inline">
+                  <input type="radio" name="optionsRadiosinline" id="optionsRadios4"
+                         value="option2"> 选项 2
+              </label>
+          </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">
-          申请
-        </button>
-      </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" >申请</button>
+        </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal -->
 </div>
@@ -93,57 +111,6 @@
 </p></div>
 </html>
 <script>
-    $(function(){
-        var columns=[
-            {
-                title: 'ID',
-                field: 'Id',
-                align: 'center',
-                valign: 'middle',
-            },
-            {
-                title: '校区',
-                field: 'Xiaoqu',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title: '机房名',
-                field: 'Building',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title: '机房号',
-                field: 'Cpno',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title: '人数',
-                field: 'Peoplenum',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                title: '操作',
-                field: 'IdTwo',
-                align: 'center',
-                formatter:function(value,row,index){
-                    var e = '<button href="#" class="btn btn-primary" data-target="#myModal" data-toggle="modal">查看</button> ';
-                    var d = '<button href="#" class="btn btn-primary"  onclick="apply(\''+ row.id + '\')">申请</button> ';
-                    return e+d;
-                }
-            }
-        ];
-        
-        //b(columns);
-
-    });
     $('.date-picker input').datepicker({
       language:"zh-CN",
       autoclose: true,//选中之后自动隐藏日期选择框
@@ -206,12 +173,14 @@
         //得到查询的参数
         function queryParams (params) {
             var temp = {  //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-                pageSize: params.pageSize,  //页面大小
-                pageNumber: params.pageNumber, //页码
-                xiaoqu: $("#search_xiaoqu").val(),//后台请求传的查询参数
+                // pageSize: params.pageSize,  //页面大小
+                // pageNumber: params.pageNumber, //页码
+                location: $("#search_xiaoqu").val(),//后台请求传的查询参数
                 software:$("#search_software").val(),
                 time_start:$("#time_start").val(),
                 time_end:$("#time_end").val(),
+                lesson_start:$("#lesson_start").val(),
+                lesson_end:$("#lesson_end").val(),
                 peoplenum:$("#peoplenum").val(),
             };
             return temp;
@@ -225,35 +194,50 @@
         }
         var columns=[
             {
-                title: 'ID',
-                field: 'Id',
+                field: 'Cpno',
+                visible:false
+            },
+            {
+                title: '日期',
+                field: 'Date',
                 align: 'center',
                 valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '时间',
+                field: 'Flag',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+                formatter:function(value,row,index){
+                    var temp=parseInt(value)+1
+                    return value+"-"+temp+"节"
+                }
             },
             {
                 title: '校区',
-                field: 'Xiaoqu',
+                field: 'Location',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
-                title: '机房号',
-                field: 'Cpno',
-                align: 'center',
-                valign: 'middle',
-                sortable:true,
-            },
-            {
-                //title: '楼',
-                title:"机房名",
+                title: '楼号',
                 field: 'Building',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
-                title: '人数',
+                title: '机房名',
+                field: 'CpName',
+                align: 'center',
+                valign: 'middle',
+                sortable:true,
+            },
+            {
+                title: '剩余机数',
                 field: 'Peoplenum',
                 align: 'center',
                 valign: 'middle',
@@ -264,9 +248,8 @@
                 field: 'IdTwo',
                 align: 'center',
                 formatter:function(value,row,index){
-                    var e = '<button href="#" class="btn btn-primary" data-target="#myModal" data-toggle="modal">查看</button> ';
-                    var d = '<button href="#" class="btn btn-primary"  onclick="apply(\''+ row.id + '\')">申请</button> ';
-                    return e+d;
+                    var d = '<button href="#" class="btn btn-primary"  onclick="checkinfo(\''+ row["Cpno"]+ '\',\''+row["Date"]+ '\')"  data-target="#myModal" data-toggle="modal">申请</button> ';
+                    return d;
                 }
             }
         ];
@@ -277,6 +260,8 @@
         var endDate=$("#time_end").val();
         var d1 = new Date(beginDate);
         var d2 = new Date(endDate);
+        var day = new Date();
+        day.setTime(day.getTime());
         if(beginDate!=""&&endDate!=""&&d1 >=d2)
         {
             alert("开始时间不能大于结束时间！");
@@ -284,7 +269,41 @@
         }else if(beginDate==""||endDate==""){
             alert("请键入开始和结束时间");
             return false;
+        }else  if(d1<day){
+            alert("开始日期必须大于当前日期");
+            return false;
         }
         return true;
+    }
+    function checkinfo(cpno,date) {
+        var  newdate=new Date(date).getDay()
+        $.ajax({
+            type: "POST",
+            url: "/checkinfo",
+            data:{
+                cpno: cpno,
+                date:newdate
+            },
+            success: function (result) {
+                if(result["code"]==200){
+                    document.getElementById("mname").innerHTML=result["mname"]
+                    document.getElementById("mphone").innerHTML=result["mphone"]
+                    document.getElementById("sfware").innerHTML=result["sfware"]
+                    var cclass=result["cclass"]
+                    for (var i=0;i<cclass.length;i++)
+                    {
+                        document.getElementById('cclassinfo').innerHTML="<label class=\"checkbox-inline\">\n" +
+                                "                  <input type=\"radio\" name=\"optionsRadiosinline\" id=\"optionsRadios3\"\n" +
+                                "                         value=\"option1\" checked>"+ cclass[i]["Cname"]+"-"+cclass[i]["Cclass"]+"(剩余"+ cclass[i]["Periods_remain"]+"学时)"+
+                                "              </label>"
+                    }
+                }else {
+                    alert("请求错误");
+                }
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
     }
 </script>

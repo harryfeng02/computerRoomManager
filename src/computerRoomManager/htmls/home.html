@@ -21,19 +21,38 @@
           <li class="sidebar-brand"> <a href="#"> 机房管理系统 </a> </li>
           <li onclick="apply()"> <a href="#"> <i class="fa fa-fw fa-home"> </i> 申请机房 </a> </li>
           <li onclick="check()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看申请 </a> </li>
-          <li> <a href="#"> <i class="fa fa-fw fa-file-o"> </i> 登出 </a> </li>
+            <li onclick="checkClass()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看课程 </a> </li>
+            <li onclick="myinform()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 个人信息 </a> </li>
+            <li> <a href="#"> <i class="fa fa-fw fa-file-o"> </i> 登出 </a> </li>
         </ul>
      </nav>
-<iframe id="iframe-page-content" src="detail.html" style="width: 100%"></iframe>
+<iframe id="iframe-page-content" src="detail.html" style="width: 100%;"></iframe>
+    <iframe id="iframe-page-content2" src="check.html" style="width: 100%;display:none" ></iframe>
+
 </div>
 <script type="text/javascript">
   var ifm= document.getElementById("iframe-page-content");
   ifm.height=document.documentElement.clientHeight;
+  ifm= document.getElementById("iframe-page-content2");
+  ifm.height=document.documentElement.clientHeight;
   function check(){
-      document.getElementById("iframe-page-content").src="check.html";
+      document.getElementById("iframe-page-content2").src="check.html";
+      document.getElementById("iframe-page-content2").style.display="";
+      document.getElementById("iframe-page-content").style.display="none";
   }
   function apply(){
-      document.getElementById("iframe-page-content").src="detail.html";
+      document.getElementById("iframe-page-content").style.display="";
+      document.getElementById("iframe-page-content2").style.display="none";
+  }
+  function myinform() {
+      document.getElementById("iframe-page-content2").src="myinform.html";
+      document.getElementById("iframe-page-content2").style.display="";
+      document.getElementById("iframe-page-content").style.display="none";
+  }
+  function checkClass() {
+      document.getElementById("iframe-page-content2").src="myclass.html";
+      document.getElementById("iframe-page-content2").style.display="";
+      document.getElementById("iframe-page-content").style.display="none";
   }
 </script>
 </body>

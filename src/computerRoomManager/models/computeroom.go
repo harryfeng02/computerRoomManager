@@ -9,6 +9,10 @@ type Computeroom struct {
 	CpName string `json:"CpName"`
 	//如果有中文  golang默认编码为utf-8 sql server中应设置nvarchar而不是varchar才会转换为utf-8
 	PeopleNum int `json:"PeopleNum"`
+	CpLocation string
+	CpBuilding string
+	date string
+	flag int
 }
 
 //添加机房

@@ -4,8 +4,14 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	//"github.com/gin-contrib/sessions"
 )
 func CheckApply(c *gin.Context) {
+	tno:=isHaveSessions(c)
+	if(tno==""){
+		return
+	}
+	fmt.Println("test2")
 	var applyno string
 	var cname string
 	var cno string
@@ -19,7 +25,7 @@ func CheckApply(c *gin.Context) {
 	var peoplenum  string
 	pp:=[2]gin.H{}
 
-	dir:=db.MyDB.QueryRow("SELECT applyno,cname,course.cno,course.cclass,starttime,start_lesson,end_lesson,cplocation,cpbuilding,cpname,apply.peoplenum FROM Apply,teach, computerroom,course where apply.tid in (select tid from teach where teach.tno=?)  and apply.cpno=computerroom.cpno and teach.tid in (select tid from teach where teach.tno=?) and course.cno in (select cno from teach where teach.tno=?)", "000000", "000000","000000").
+	dir:=db.MyDB.QueryRow("SELECT applyno,cname,course.cno,course.cclass,starttime,start_lesson,end_lesson,cplocation,cpbuilding,cpname,apply.peoplenum FROM Apply,teach, computerroom,course where apply.tid in (select tid from teach where teach.tno=?)  and apply.cpno=computerroom.cpno and teach.tid in (select tid from teach where teach.tno=?) and course.cno in (select cno from teach where teach.tno=?)", tno, tno,tno).
 		Scan(&applyno,&cname,&cno,&cclass,&starttime,&start_lesson,&end_lesson,&cplocation,&cpbuilding,&cpname,&peoplenum)
 	fmt.Println(cclass,dir)
 	pp[0]= gin.H{

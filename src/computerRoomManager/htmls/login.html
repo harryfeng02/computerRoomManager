@@ -82,7 +82,7 @@
         var encryptPassword = hex_md5($("[name=form-password]").val());
         $.ajax({
             type:"post",
-            url:"http://127.0.0.1:8000/login",
+            url:"/login",
             data:{
                 usrno: $("[name=form-username]").val(),
                 passwd:encryptPassword,
@@ -91,7 +91,7 @@
             },
             success: function(result){
                 if(result["code"]==200){
-                    window.location.href="/home.html"
+                    window.location.href='/'+result["location"]+'.html'
                 }else if(result["code"]==201){
                     alert("用户名或密码错误失败");
                 }else {

@@ -2,10 +2,8 @@ package apis
 
 import (
 	"strconv"
-
 	. "computerRoomManager/models"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,50 +11,40 @@ const (
 	datetime = "2006-01-02 15:04:02"
 )
 
-type resultJson struct {
-	Id        int
-	Xiaoqu    string
-	Building  string
-	Cpno      string
-	Peoplenum int
-	IdTwo     int
-}
+
 
 func SearchApi(c *gin.Context) {
+	tno:=isHaveSessions(c)
+	if(tno==""){
+		return
+	}
 	//pageSize := c.PostForm("pageSize")
 	//pageNumber := c.PostForm("pageNumber")
-	xiaoqu := c.PostForm("xiaoqu")
+	location := c.PostForm("location")
 	software := c.PostForm("software")
-	//time_start := c.PostForm("time_start")
-	//time_end := c.PostForm("time_end")
+	time_start := c.PostForm("time_start")
+	time_end := c.PostForm("time_end")
+	lesson_start:=c.PostForm("lesson_start")
+	lesson_end:=c.PostForm("lesson_end")
 	peoplenum := c.PostForm("peoplenum")
 
 	number, _ := strconv.Atoi(peoplenum)
-	require := SearchRoom{SfName: software, PeopleNum: number}
-
+	require := SearchRoom{SfName: software, PeopleNum: number,StartTime:time_start,EndTime:time_end,StratLesson:lesson_start,EndLesson:lesson_end,Location:location}
 	results, err := require.Search()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":  http.StatusInternalServerError,
+		c.JSON(http.StatusOK, gin.H{
+			"code":  "201",
 			"error": err.Error(),
 		})
-	}
-	var resultjsons []resultJson
-	for i := 0; i < len(results); i++ {
-		resultjson := resultJson{
-			Id:        i + 1,
-			Xiaoqu:    xiaoqu,
-			Cpno:      results[i].CpNo,
-			Building:  results[i].CpName,
-			Peoplenum: results[i].PeopleNum,
-			IdTwo:     i + 1,
-		}
-		resultjsons = append(resultjsons, resultjson)
+		return
 	}
 
+
+
 	c.JSON(http.StatusOK, gin.H{
-		"total": len(results),
-		"rows":  resultjsons[0],
+		"rows":  results,
+		"total":len(results),
 	})
 
 }
+

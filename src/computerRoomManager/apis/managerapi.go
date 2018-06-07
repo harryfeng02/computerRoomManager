@@ -1,10 +1,12 @@
 package apis
 
 import (
-	. "computerRoomManager/models"
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"path"
+	. "computerRoomManager/models"
+
+	"github.com/gin-contrib/sessions"
 )
 
 func LoginApi(c *gin.Context) {
@@ -25,20 +27,32 @@ func LoginApi(c *gin.Context) {
 		return
 	}
 
-	manager := Manager{Mno: userno, Mname: "", Mphone: "", Mpassword: passwd}
-	name, err := manager.Check()
-	if err != nil {
-		//log.Fatal(err.Error())
-		c.JSON(http.StatusOK, gin.H{
-			"code":  201,
-			"error": err.Error(),
+	if(len(userno)==6){
+		manager := Manager{Mno: userno, Mname: "", Mphone: "", Mpassword: passwd}
+		_, err := manager.Check()
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  201,
+				"error": err.Error(),
+			})
+			return
+	} else {
+			session := sessions.Default(c)
+			session.Set("id", userno)
+			session.Save()
+		c.JSON(http.StatusOK,gin.H{
+			"code":200,
+			"location":"home",
 		})
+
+		}
 		return
+		//log.Fatal(err.Error())
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
-		"name": name,
+		//"name": name,
 	})
 	//c.Redirect(http.StatusMovedPermanently, "index.html")
 }

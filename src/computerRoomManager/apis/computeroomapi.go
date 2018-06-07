@@ -10,6 +10,10 @@ import (
 )
 
 func AddComRoomApi(c *gin.Context) {
+	tno:=isHaveSessions(c)
+	if(tno==""){
+		return
+	}
 	roomCpNo := c.Request.FormValue("CpNo")
 	roomName := c.Request.FormValue("CpName")
 	roomPeoNum := c.Request.FormValue("PeopleNum")

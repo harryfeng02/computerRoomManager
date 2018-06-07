@@ -15,16 +15,21 @@ func IndexApi(c *gin.Context) {
 }
 
 func HomeInitApi(c *gin.Context) {
+	isHaveSessions(c)
 	c.HTML(http.StatusOK, "home.html", gin.H{})
 }
 
 func DetailApi(c *gin.Context) {
+	isHaveSessions(c)
 	c.HTML(http.StatusOK, "detail.html", gin.H{})
 }
 func CheckApi(c *gin.Context) {
+	isHaveSessions(c)
 	c.HTML(http.StatusOK, "check.html", gin.H{})
 }
-
-func WhatApi(c *gin.Context){
-	c.HTML(http.StatusOK,"test.html",gin.H{})
+func MyClassApi(c *gin.Context) {
+	isHaveSessions(c)
+	c.HTML(http.StatusOK, "myclass.html", gin.H{})
 }
+
+
