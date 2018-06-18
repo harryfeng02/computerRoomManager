@@ -48,7 +48,7 @@
 <h2>申请机房</h2>
 <div class="form-group" style="margin-top: 30px" >
   <label for="inputEmail3" class="control-label" style="left;">校区</label>
-  <select class="form-control" id="search_xiaoqu" name="UserV2.sex" style="right;width:120px;display:inline-block;"><option value="">-请选择-</option><option value="翡翠湖">翡翠湖校区</option><option value="屯溪路">屯溪路校区</option></select>
+  <select class="form-control" id="search_xiaoqu" name="UserV2.sex" style="right;width:120px;display:inline-block;"><option value="">-请选择-</option><option value="翡翠湖校区">翡翠湖校区</option><option value="屯溪路">屯溪路校区</option></select>
   <label for="inputEmail3" class="control-label" style="left">软件名称</label>
   <input type="text" class="form-control" id="search_software" name="UserV2.phone" style="right;width:120px;display:inline-block;">
   <div class="date-picker" style="right;display:inline-block;">
@@ -83,22 +83,22 @@
         </h4>
       </div>
       <div class="modal-body">
-          <span>机房软件环境：</span> <span id="sfware">sql server</span><br><br>
-        <span>管理员：</span> <span id="mname">冯炳楠</span><br><br>
-          <span>管理员电话：</span> <span id="mphone">17356528323</span><br><br>
+          <span>机房软件环境：</span> <span id="sfware"></span><br><br>
+        <span>管理员：</span> <span id="mname"></span><br><br>
+          <span>管理员电话：</span> <span id="mphone"></span><br><br>
           <div id="cclassinfo">
-              <label class="checkbox-inline">
-                  <input type="radio" name="optionsRadiosinline" id="optionsRadios3"
-                         value="option1" checked> 选项 1
-              </label>
-              <label class="checkbox-inline">
-                  <input type="radio" name="optionsRadiosinline" id="optionsRadios4"
-                         value="option2"> 选项 2
-              </label>
+              {{/*<label class="checkbox-inline">*/}}
+                  {{/*<input type="radio" name="optionsRadiosinline" id="optionsRadios3"*/}}
+                         {{/*value="option1" checked> 选项 1*/}}
+              {{/*</label>*/}}
+              {{/*<label class="checkbox-inline">*/}}
+                  {{/*<input type="radio" name="optionsRadiosinline" id="optionsRadios4"*/}}
+                         {{/*value="option2"> 选项 2*/}}
+              {{/*</label>*/}}
           </div>
       </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" >申请</button>
+            <button class="btn btn-primary" onclick="applyroom()">申请</button>
         </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal -->
@@ -111,6 +111,10 @@
 </p></div>
 </html>
 <script>
+    var df_date
+    var df_cpno
+    var df_flag
+    var df_tid
     $('.date-picker input').datepicker({
       language:"zh-CN",
       autoclose: true,//选中之后自动隐藏日期选择框
@@ -118,24 +122,6 @@
       todayBtn: true,//今日按钮
       format: "yyyy-mm-dd"
     });
-    function b (columns) {
-        $('#userListTable').bootstrapTable({
-            columns: columns,
-            data: [{
-               id: 2,
-               xiaoqu: 'Item 3',
-               building: '$3',
-               cpno:"ss",
-               peoplenum:"ss",
-            },{
-               id: 2,
-               xiaoqu: 'Item 3',
-               building: '$3',
-               cpno:"ss",
-               peoplenum:"ss",
-            }]
-        })
-    }
     function a (dataurl,columns) {
         $('#userListTable').bootstrapTable({
             url: dataurl,
@@ -155,15 +141,14 @@
             showPaginationSwitch:false,//是否显示数据条数选择框
             sortable: true,           //是否启用排序
             sortOrder:"asc",
-            sortName : 'id',
+            sortName : 'date',
             singleSelect: false,
-            search:false, //显示搜索框
+            search:true, //显示搜索框
             buttonsAlign: "right", //按钮对齐方式
             showRefresh:false,//是否显示刷新按钮
-            sidePagination: "server", //服务端处理分页
+            sidePagination: "client", //服务端处理分页
             pageNumber:1,
-            pageSize:5,
-            pageList:[5,10, 25, 50, 100],
+            pageSize:13,
             undefinedText:'--',
             uniqueId: "id", //每一行的唯一标识，一般为主键列
             queryParamsType:'',
@@ -173,10 +158,8 @@
         //得到查询的参数
         function queryParams (params) {
             var temp = {  //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-                // pageSize: params.pageSize,  //页面大小
-                // pageNumber: params.pageNumber, //页码
                 location: $("#search_xiaoqu").val(),//后台请求传的查询参数
-                software:$("#search_software").val(),
+                software:$("#search_software").val().toLowerCase(),
                 time_start:$("#time_start").val(),
                 time_end:$("#time_end").val(),
                 lesson_start:$("#lesson_start").val(),
@@ -248,7 +231,7 @@
                 field: 'IdTwo',
                 align: 'center',
                 formatter:function(value,row,index){
-                    var d = '<button href="#" class="btn btn-primary"  onclick="checkinfo(\''+ row["Cpno"]+ '\',\''+row["Date"]+ '\')"  data-target="#myModal" data-toggle="modal">申请</button> ';
+                    var d = '<button href="#" class="btn btn-primary"  onclick="checkinfo(\''+ row["Cpno"]+ '\',\''+row["Date"]+ '\',\''+row["Flag"]+ '\')"  data-target="#myModal" data-toggle="modal">申请</button> ';
                     return d;
                 }
             }
@@ -275,8 +258,14 @@
         }
         return true;
     }
-    function checkinfo(cpno,date) {
+    function checkinfo(cpno,date,flag) {
+        df_cpno=cpno
+        df_date=date
+        df_flag=flag
         var  newdate=new Date(date).getDay()
+        if(newdate==0){
+            newdate=7
+        }
         $.ajax({
             type: "POST",
             url: "/checkinfo",
@@ -296,6 +285,9 @@
                                 "                  <input type=\"radio\" name=\"optionsRadiosinline\" id=\"optionsRadios3\"\n" +
                                 "                         value=\"option1\" checked>"+ cclass[i]["Cname"]+"-"+cclass[i]["Cclass"]+"(剩余"+ cclass[i]["Periods_remain"]+"学时)"+
                                 "              </label>"
+                        document.getElementById('optionsRadios3').value=cclass[i]["Tid"]
+                        document.getElementById('optionsRadios3').id=cclass[i]["Tid"]
+
                     }
                 }else {
                     alert("请求错误");
@@ -303,6 +295,34 @@
             },
             error: function () {
                 alert("错误");
+            }
+        });
+    }
+    function applyroom() {
+        var obj = document.getElementsByTagName("input");
+        var df_tid;
+        for(var i=0; i<obj.length; i ++){
+            if(obj[i].checked){
+                df_tid=obj[i].value;
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: "/applyroom",
+            data:{
+                tid: df_tid,
+                date:df_date,
+                flag:df_flag,
+                cpno:df_cpno,
+            },
+            success: function (result) {
+                alert(result["error"])
+                $("#myModal").modal('hide');
+                serachUser()
+            },
+            error: function () {
+                alert("请求错误");
+                $("#myModal").modal('hide');
             }
         });
     }

@@ -12,11 +12,11 @@ type Manager struct {
 	Mpassword string
 }
 
-func (manage *Manager) Check() (name string, err error) {
+func (manage *Manager) MCheck() (name string, err error) {
 	no := manage.Mno
 	passwd := manage.Mpassword
 	var username string
-	err2 := db.MyDB.QueryRow("select dbo.manager.mname from dbo.manager where dbo.manager.mno=? and dbo.manager.mpassword=?",
+	err2 := db.MyDB.QueryRow("exec isManagerPasswordRight @mno=?,@password=?",
 		no, passwd).Scan(&username)
 	if err2 == nil {
 		return username, err2

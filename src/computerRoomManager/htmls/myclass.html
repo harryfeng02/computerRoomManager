@@ -25,54 +25,54 @@
         var columns=[
             {
                 title: '课程',
-                field: 'course',
+                field: 'Course',
                 align: 'center',
                 valign: 'middle',
             },
             {
                 title: '代码',
-                field: 'course_code',
+                field: 'Course_Class',
                 align: 'center',
                 valign: 'middle',
             },
             {
                 title: '学期',
-                field: 'semester',
+                field: 'Semester',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
                 title: '时间',
-                field: 'time',
+                field: 'Time',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
                 title: '校区',
-                field: 'location',
+                field: 'Location',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
                 title: '地点',
-                field: 'building',
+                field: 'Building',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
                 title: '选课人数',
-                field: 'peoplenum',
+                field: 'Peoplenum',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
             },
             {
                 title: '学分',
-                field: 'credit',
+                field: 'Credit',
                 align: 'center',
                 valign: 'middle',
                 sortable:true,
@@ -118,14 +118,14 @@
             showPaginationSwitch:false,//是否显示数据条数选择框
             sortable: true,           //是否启用排序
             sortOrder:"asc",
-            sortName : 'id',
+            sortName : 'Time',
             singleSelect: false,
-            search:false, //显示搜索框
+            search:true, //显示搜索框
             buttonsAlign: "right", //按钮对齐方式
             showRefresh:false,//是否显示刷新按钮
-            sidePagination: "server", //服务端处理分页
+            sidePagination: "client", //服务端处理分页
             pageNumber:1,
-            pageSize:5,
+            pageSize:13,
             pageList:[5,10, 25, 50, 100],
             undefinedText:'--',
             uniqueId: "id", //每一行的唯一标识，一般为主键列

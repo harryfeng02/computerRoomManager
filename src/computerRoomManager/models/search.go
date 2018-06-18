@@ -2,7 +2,6 @@ package models
 
 import (
 	db "computerRoomManager/database"
-	"fmt"
 )
 
 type SearchRoom struct {
@@ -26,8 +25,8 @@ type resultJson struct {
 
 func (require *SearchRoom) Search() (rooms []resultJson, err error) {
 	rows, err := db.MyDB.Query(
-		"select computerroomstatus.cpno,cplocation,cpbuilding,cpname,computerroomstatus.date,flag,computerroomstatus.peoplenum from computerroom,computerroomstatus where  computerroomstatus.cpno in (select cpno from own where sfname like ?)  and computerroomstatus.cpno=computerroom.cpno and ?<=computerroomstatus.date and computerroomstatus.date<=? and computerroomstatus.peoplenum>=? and flag>=? and (flag+1)<=? and computerroom.cplocation=?",
-		"%"+require.SfName+"%",require.StartTime,require.EndTime, require.PeopleNum,require.StratLesson,require.EndLesson,require.Location)
+		"exec SearchRoom @sfname=?,@startdate=?,@enddate=?,@peoplenum=?,@startlesson=?,@endlesson=?,@location=?",
+		require.SfName,require.StartTime,require.EndTime, require.PeopleNum,require.StratLesson,require.EndLesson,require.Location)
 	if err != nil {
 		return nil, err
 	} else {
@@ -36,9 +35,9 @@ func (require *SearchRoom) Search() (rooms []resultJson, err error) {
 			var resultRoom resultJson
 			if err := rows.Scan(&resultRoom.Cpno,&resultRoom.Location, &resultRoom.Building, &resultRoom.CpName, &resultRoom.Date, &resultRoom.Flag, &resultRoom.Peoplenum); err == nil {
 				resultRooms = append(resultRooms, resultRoom)
-				fmt.Println(resultRoom.Building)
 			}
 		}
+
 		return resultRooms, err
 	}
 }

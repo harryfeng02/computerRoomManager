@@ -1,48 +1,47 @@
 package apis
 import (
 	db "computerRoomManager/database"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"fmt"
 )
+type MyClass struct {
+	Course    string
+	Course_No string
+	Course_Class string
+	Time      string
+	Location  string
+	Building  string
+	Semester  string
+	Peoplenum string
+	Credit    string
+}
 func CheckMyClass(c *gin.Context) {
 	tno:=isHaveSessions(c)
 	if(tno==""){
 		return
 	}
-	var cname string
-	var cno string
-	var cclass string
-	var location  string
-	var building  string
-	var peoplenum  string
-	var time  string
-	var semester  string
-	var credit  string
-	pp:=[2]gin.H{}
+	fmt.Println(tno)
+	myclass_result,err1:=db.MyDB.Query("exec CheckMyClass @tno=?", tno)
+	
+	if(err1!=nil){
+        c.JSON(http.StatusOK,gin.H{
+			"code":"201",
+			"error":err1,
+		})
+        fmt.Println("查看授课error：",err1)
+		return
 
-	dir:=db.MyDB.QueryRow("select cname,course.cno,course.cclass,location,building,semester,time,peoplenum,credit from teach,course where course.cno=teach.cno and teach.tno=?", tno).
-		Scan(&cname,&cno,&cclass,&location,&building,&semester,&time,&peoplenum,&credit)
-	fmt.Println(cclass,dir)
-	pp[0]= gin.H{
-		"course":cname,
-		"course_code": cno+"-"+cclass,
-		"time":time,
-		"location": location,
-		"building":building,
-		"semester":semester,
-		"peoplenum": peoplenum,
-		"credit":credit,
+	} else{
+		var temp []MyClass
+		for myclass_result.Next() {
+			var mc MyClass
+			if err := myclass_result.Scan(&mc.Course,&mc.Course_No,&mc.Course_Class,&mc.Location,&mc.Building,&mc.Semester,&mc.Time,&mc.Peoplenum,&mc.Credit); err == nil {
+				temp=append(temp,mc)
+			}else {
+				fmt.Println("查看授课scan error：",err)
+			}
+		}
+		c.JSON(http.StatusOK, temp)
 	}
-	pp[1]= gin.H{
-		"course":cname,
-		"course_code": cno+"-"+cclass,
-		"time":time,
-		"location": location,
-		"building":building,
-		"semester":semester,
-		"peoplenum": peoplenum,
-		"credit":credit,
-	}
-	c.JSON(http.StatusOK, pp)
 }

@@ -3,7 +3,6 @@ package main
 import (
 	. "computerRoomManager/apis"
 	"github.com/gin-gonic/gin"
-	"os"
 	"path/filepath"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-contrib/sessions"
@@ -12,7 +11,7 @@ import (
 func initRouter() *gin.Engine {
 	router := gin.Default()
 	store := cookie.NewStore([]byte("secret"))
-	store.Options(sessions.Options{MaxAge: 3600})
+	//store.Options(sessions.Options{MaxAge: 3600})
 	router.Use(sessions.Sessions("mysession", store))
 
 	//dir2:="C://Users//bingnan//computerRoomManager//src//computerRoomManager"
@@ -26,7 +25,9 @@ func initRouter() *gin.Engine {
 	router.GET("/index.html", IndexApi)
 	router.POST("/room", AddComRoomApi)
 	router.GET("/home.html", HomeInitApi)
-
+	router.GET("/manage.html", MangerHomeInitApi)
+	router.GET("/checkApply.html", MangerCheckApi)
+	router.GET("/checkSoftware.html", MangerUpdateApi)
 	router.GET("/detail.html", DetailApi)
 	router.GET("/yzmchange", YzmChnageapi)
 	router.GET("/check.html", CheckApi)
@@ -36,9 +37,14 @@ func initRouter() *gin.Engine {
 	router.GET("/myclass",CheckMyClass)
 	router.POST("/undo",Undo)
 	router.POST("/checkinfo",CheckInfo)
+	router.POST("/applyroom",ApplyRoom)
+	router.POST("/lookmore",LookMore)
+	router.GET("/logout",LogoutApi)
+	router.GET("/checkm",ManagerCheckApply)
+	router.POST("/lookmorem",ManagerLookMore)
+	router.GET("/checkSoftware",CheckSoftWare)
+	router.POST("/deletesoftware",DeleteSoftware)
+	router.POST("/updatesoftware",UpdateSoftware)
+	router.POST("/newsoftware",NewSoftware)
 	return router
-}
-func GetCurrentDirectory() string {
-	dir,_:=os.Getwd()
-	return dir
 }

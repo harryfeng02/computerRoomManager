@@ -5,6 +5,7 @@ import (
 	. "computerRoomManager/models"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"fmt"
 )
 
 const (
@@ -36,15 +37,15 @@ func SearchApi(c *gin.Context) {
 			"code":  "201",
 			"error": err.Error(),
 		})
+		fmt.Println("搜索失败:",err)
 		return
 	}
-
-
-
-	c.JSON(http.StatusOK, gin.H{
-		"rows":  results,
-		"total":len(results),
-	})
+	if(results==nil){
+		var temp =[]gin.H{}
+		c.JSON(http.StatusOK, temp)
+		return
+	}
+	c.JSON(http.StatusOK, results)
 
 }
 

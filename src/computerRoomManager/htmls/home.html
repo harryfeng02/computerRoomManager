@@ -22,8 +22,7 @@
           <li onclick="apply()"> <a href="#"> <i class="fa fa-fw fa-home"> </i> 申请机房 </a> </li>
           <li onclick="check()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看申请 </a> </li>
             <li onclick="checkClass()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 查看课程 </a> </li>
-            <li onclick="myinform()"> <a href="#"> <i class="fa fa-fw fa-folder"> </i> 个人信息 </a> </li>
-            <li> <a href="#"> <i class="fa fa-fw fa-file-o"> </i> 登出 </a> </li>
+            <li onclick="logout()"> <a href="#"> <i class="fa fa-fw fa-file-o"> </i> 登出 </a> </li>
         </ul>
      </nav>
 <iframe id="iframe-page-content" src="detail.html" style="width: 100%;"></iframe>
@@ -53,6 +52,18 @@
       document.getElementById("iframe-page-content2").src="myclass.html";
       document.getElementById("iframe-page-content2").style.display="";
       document.getElementById("iframe-page-content").style.display="none";
+  }
+  function logout() {
+      $.ajax({
+          type: "GET",
+          url: "/logout",
+          success: function (msg) {
+              window.location.href="/";
+          },
+          error: function () {
+              alert("错误");
+          }
+      });
   }
 </script>
 </body>

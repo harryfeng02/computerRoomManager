@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootstrap-table.js"></script>
+    <script src="assets/js/bootstrap-table-zh-CN.js"></script>
+    <script src="assets/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="assets/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css">
+    <link rel="stylesheet" href="assets/dist/css/bootstrap-datepicker3.min.css">
+    <meta charset="UTF-8">
+    <title>查看软件环境</title>
+</head>
+<body>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    详情
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div style="padding: 100px 100px 10px;">
+                        <div class="input-group">
+                            <span class="input-group-addon">软件名称</span>
+                            <input type="text" class="form-control" id="input_sfname">
+                        </div>
+                        <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">软件版本</span>
+                        <input type="text" class="form-control" id="input_sfverison">
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary"
+                        id="confirm" onclick="updateconfirm()">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</div>
+
+<!-- 模态框   信息删除确认 -->
+<div class="modal fade" id="delcfmOverhaul">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <!-- 隐藏需要删除的id -->
+                <input type="hidden" id="deleteHaulId" />
+                <p>您确认要撤销该软件环境吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="deletedismissBtn"
+                        data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary"
+                        id="deleteHaulBtn" onclick="deletes()">确认</button>
+            </div>
+        </div>
+    </div></div>
+<div style="margin-left: 30px;margin-right: 30px;">
+    <h2>查看软件环境</h2>
+
+    <div style="height:auto;">
+        <div align="right">
+            <button type="button" class="btn btn-primary" id="newsf" onclick="newsf()" style="margin-right: 0" data-target="#myModal" data-toggle="modal">新增</button>
+        </div>
+        <table id="sfListTable" ></table>
+    </div>
+
+</div>
+</body>
+<script>
+    var cpno;
+    var oldsfname;
+    var oldsfversion
+    $(function(){
+        var columns=[
+            {
+                title:'dd',
+                field: 'cpno',
+                visible:false
+            },
+            {
+                title: '软件名称',
+                field: 'sfname',
+                align: 'center',
+                valign: 'middle',
+            },
+            {
+                title: '软件版本',
+                field: 'sfverison',
+                align: 'center',
+                valign: 'middle',
+            },
+            {
+                title: '操作',
+                field: 'id',
+                align: 'center',
+                formatter:function(value,row,index){
+                    cpno= row["cpno"];
+                    var e = '<button href="#" class="btn btn-primary"  onclick="update(\''+ row["sfname"]+ '\',\''+ row["sfverison"]+ '\')" data-target="#myModal" data-toggle="modal">修改</button> ';
+                    var d = '<button href="#" class="btn btn-danger"   onclick="delete_confirm(\''+ row["sfname"]+ '\',\''+ row["sfverison"]+ '\')" >删除</button> ';
+                    return e+d;
+                }
+            }
+        ];
+        get(columns);
+    });
+    function get(columns) {
+        $.ajax({
+            type: "GET",
+            url: "/checkSoftware",
+            dataType: "json",
+            success: function (msg) {
+                a(msg,columns)
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
+    }
+    function a (data,columns) {
+        $('#sfListTable').bootstrapTable({
+            data:data,
+            method:"get",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            striped:true,//隔行变色
+            cache:true,  //是否使用缓存
+            showColumns:false,// 列
+//            toobar:'#toolbar',
+            pagination: true, //分页
+            paginationLoop:false,
+            paginationPreText:'上一页',
+            paginationNextText:'下一页',
+//            showFooter:true,//显示列脚
+//            showRefresh:true,//显示刷新
+            showPaginationSwitch:false,//是否显示数据条数选择框
+            sortable: true,           //是否启用排序
+            sortOrder:"asc",
+            sortName : 'date',
+            singleSelect: true,
+            search:true, //显示搜索框
+            buttonsAlign: "right", //按钮对齐方式
+            showRefresh:false,//是否显示刷新按钮
+            sidePagination: "client", //服务端处理分页
+            pageNumber:1,
+            pageSize:13,
+            pageList:[5,10, 25, 50, 100],
+            undefinedText:'--',
+            uniqueId: "id", //每一行的唯一标识，一般为主键列
+            queryParamsType:'',
+            columns: columns
+        });
+    }
+    function update(sfname,sfverison) {
+        $("#confirm").val(1)
+        $("#input_sfname").val(sfname)
+        $("#input_sfverison").val(sfverison)
+        oldsfname=sfname
+        oldsfversion=sfverison
+    }
+    function newsf() {
+        $("#confirm").val(2)
+        $("#input_sfname").val("")
+        $("#input_sfverison").val("")
+    }
+    function updateconfirm() {
+        if($("#input_sfname").val()==""||$("#input_sfverison").val()==""){
+            alert("请正确填写软件名称或版本！")
+        }else {
+            var url2="/updatesoftware"
+            if($("#confirm").val()==2){
+                url2="/newsoftware"
+            }
+            $.ajax({
+                type: "POST",
+                url: url2,
+                data:{
+                    cpno: cpno,
+                    sfname:  $("#input_sfname").val(),
+                    sfversion:$("#input_sfverison").val(),
+                    oldsfversion:oldsfversion,
+                    oldsfname:oldsfname
+                },
+                success: function (result) {
+                    if(result=="ok"){
+                        alert("成功");
+                        $("#myModal").modal('hide');
+                        location.reload()
+                    }else{
+                        alert("错误");
+                    }
+                },
+                error: function () {
+                    alert("错误");
+                }
+            });
+        }
+    }
+    function delete_confirm(sfname,sfverion) {
+        $("#deleteHaulBtn").val(sfname)
+        $("#deletedismissBtn").val(sfverion)
+        $("#delcfmOverhaul").modal({
+            backdrop : 'static',
+            keyboard : false
+        });
+    }
+    function deletes() {
+        $("#delcfmOverhaul").modal('hide');
+        $.ajax({
+            type: "POST",
+            url: "/deletesoftware",
+            data:{
+                cpno: cpno,
+                sfname: $("#deleteHaulBtn").val(),
+                sfversion:$("#deletedismissBtn").val()
+            },
+            success: function (msg) {
+                if(msg=="ok"){
+                    alert("删除成功");
+                    location.reload()
+                }else{
+                    alert("删除错误");
+                }
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
+    }
+</script>
+</html>

@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	//"github.com/gin-contrib/sessions"
+	"time"
 )
 func CheckApply(c *gin.Context) {
 	tno:=isHaveSessions(c)
 	if(tno==""){
 		return
 	}
-	fmt.Println("test2")
+
 	var applyno string
+	var cpno  int
 	var cname string
 	var cno string
 	var cclass string
@@ -23,30 +24,82 @@ func CheckApply(c *gin.Context) {
 	var cpbuilding  string
 	var cpname  string
 	var peoplenum  string
-	pp:=[2]gin.H{}
+	var apply_result_json =[]gin.H{}
 
-	dir:=db.MyDB.QueryRow("SELECT applyno,cname,course.cno,course.cclass,starttime,start_lesson,end_lesson,cplocation,cpbuilding,cpname,apply.peoplenum FROM Apply,teach, computerroom,course where apply.tid in (select tid from teach where teach.tno=?)  and apply.cpno=computerroom.cpno and teach.tid in (select tid from teach where teach.tno=?) and course.cno in (select cno from teach where teach.tno=?)", tno, tno,tno).
-		Scan(&applyno,&cname,&cno,&cclass,&starttime,&start_lesson,&end_lesson,&cplocation,&cpbuilding,&cpname,&peoplenum)
-	fmt.Println(cclass,dir)
-	pp[0]= gin.H{
-		"apply":  applyno,
-		"course":cname,
-		"course_code": cno+"-"+cclass,
-		"date": starttime,
-		"time":start_lesson+"-"+end_lesson+"节",
-		"xiaoqu": cplocation,
-		"location": cpbuilding+cpname,
-		"peoplenum": peoplenum,
+	fmt.Println(time.Now())
+	apply_result,err:=db.MyDB.Query("exec checkApply @tno=?",tno)
+	fmt.Println(time.Now())
+
+	if(err!=nil){
+		c.JSON(http.StatusOK,gin.H{
+			"code":"201",
+			"error":err,
+		})
+		fmt.Println("查看申请error：",err)
+		return
 	}
-	pp[1]= gin.H{
-		"apply":  applyno,
-		"course":cname,
-		"course_code": cno+"-"+cclass,
-		"date": starttime,
-		"time":start_lesson+"-"+end_lesson+"节",
-		"xiaoqu": cplocation,
-		"location": cpbuilding+cpname,
-		"peoplenum": peoplenum,
+
+	for apply_result.Next() {
+		if err := apply_result.Scan(&applyno,&cpno,&cname,&cno,&cclass,&starttime,&start_lesson,&end_lesson,&cplocation,&cpbuilding,&cpname,&peoplenum); err == nil {
+			temp:=gin.H{
+				"apply":  applyno,
+				"cpno":cpno,
+				"course":cname,
+				"course_code": cno+"-"+cclass,
+				"date": starttime,
+				"time":start_lesson+"-"+end_lesson+"节",
+				"xiaoqu": cplocation,
+				"location": cpbuilding+cpname,
+				"peoplenum": peoplenum,
+			}
+			apply_result_json =append(apply_result_json,temp)
+		}else {
+			fmt.Println("查看申请scan error：",err)
+		}
 	}
-	c.JSON(http.StatusOK, pp)
+	c.JSON(http.StatusOK, apply_result_json)
+}
+func LookMore(c *gin.Context) {
+	tno:=isHaveSessions(c)
+	if(tno==""){
+		return
+	}
+	cpno:=c.PostForm("cpno")
+	date:=c.PostForm("date")
+
+	var mname string
+	var mphone string
+
+	err1:=db.MyDB.QueryRow("exec Lookmore @cpno=?,@date=?", cpno,date).
+		Scan(&mname,&mphone)
+	sf_result,err2:=db.MyDB.Query("exec LookSoftWare @cpno=?", cpno)
+
+	if(err1!=nil){
+		c.JSON(http.StatusOK,gin.H{
+			"code":"201",
+			"error":err1,
+		})
+		fmt.Println("查看管理员error：",err1)
+		return
+	}else if(err2!=nil){
+		c.JSON(http.StatusOK,gin.H{
+			"code":"201",
+			"error":err2,
+		})
+		fmt.Println("查看环境error：",err2)
+		return
+	}
+	var temp string
+	for sf_result.Next() {
+		var sf SoftWare
+		if err := sf_result.Scan(&sf.SfName,&sf.SV); err == nil {
+			temp=temp+sf.SfName+ " "+sf.SV+";"
+		}
+	}
+	c.JSON(http.StatusOK,gin.H{
+		"code":"200",
+		"mname":mname,
+		"mphone":mphone,
+		"sfware":temp,
+	})
 }

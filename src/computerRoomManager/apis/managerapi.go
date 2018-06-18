@@ -7,11 +7,13 @@ import (
 	. "computerRoomManager/models"
 
 	"github.com/gin-contrib/sessions"
+	"fmt"
 )
 
 func LoginApi(c *gin.Context) {
 	var yzm_map map[string]string
 	yzm_map = make(map[string]string)
+
 	yzm_map["1.png"] = "7364"
 	yzm_map["2.jpg"] = "46168"
 
@@ -27,9 +29,9 @@ func LoginApi(c *gin.Context) {
 		return
 	}
 
-	if(len(userno)==6){
+	if(userno[0]=='m'){
 		manager := Manager{Mno: userno, Mname: "", Mphone: "", Mpassword: passwd}
-		_, err := manager.Check()
+		_, err := manager.MCheck()
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code":  201,
@@ -39,20 +41,35 @@ func LoginApi(c *gin.Context) {
 	} else {
 			session := sessions.Default(c)
 			session.Set("id", userno)
+			session.Set("flag", "m")
 			session.Save()
-		c.JSON(http.StatusOK,gin.H{
-			"code":200,
-			"location":"home",
-		})
-
+			c.JSON(http.StatusOK,gin.H{
+				"code":200,
+				"location":"manage",
+			})
+			fmt.Println("管理员"+userno+"登录成功")
 		}
 		return
-		//log.Fatal(err.Error())
+	}else {
+		_, err := Check(userno,passwd)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  201,
+				"error": err.Error(),
+			})
+			fmt.Println("教师登录失败",err)
+			return
+		} else {
+			session := sessions.Default(c)
+			session.Set("id", userno)
+			session.Set("flag", "t")
+			session.Save()
+			c.JSON(http.StatusOK,gin.H{
+				"code":200,
+				"location":"home",
+			})
+			fmt.Println("教师"+userno+"登录成功")
+		}
+		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		//"name": name,
-	})
-	//c.Redirect(http.StatusMovedPermanently, "index.html")
 }
