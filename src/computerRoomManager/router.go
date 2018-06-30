@@ -46,5 +46,7 @@ func initRouter() *gin.Engine {
 	router.POST("/deletesoftware",DeleteSoftware)
 	router.POST("/updatesoftware",UpdateSoftware)
 	router.POST("/newsoftware",NewSoftware)
+	router.GET("/getpeoplenum",Checkpeoplenum)
+	router.POST("/updatepeoplenum",Updatepeoplenum)
 	return router
 }

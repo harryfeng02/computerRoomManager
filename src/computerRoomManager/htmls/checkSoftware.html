@@ -50,6 +50,37 @@
 </div>
 </div>
 
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    机房人数修改
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div align="center">
+                    <div class="input-group" style="width: 250px;">
+                        <span class="input-group-addon">人数</span>
+                        <input type="number" class="form-control" id="input_peoplenum">
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary"
+                        id="confirm" onclick="updatepeoplenum()">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</div>
+
 <!-- 模态框   信息删除确认 -->
 <div class="modal fade" id="delcfmOverhaul">
     <div class="modal-dialog">
@@ -75,15 +106,16 @@
         </div>
     </div></div>
 <div style="margin-left: 30px;margin-right: 30px;">
-    <h2>查看软件环境</h2>
-
+    <h2>机房信息修改</h2>
     <div style="height:auto;">
         <div align="right">
-            <button type="button" class="btn btn-primary" id="newsf" onclick="newsf()" style="margin-right: 0" data-target="#myModal" data-toggle="modal">新增</button>
+            <div>
+                <button type="button" class="btn btn-primary" id="editpeoplenum" onclick="getpeoplenum()" style="margin-right: 0" data-target="#myModal2" data-toggle="modal">修改机房人数</button>
+            <button type="button" class="btn btn-primary" id="newsf" onclick="newsf()" style="margin-right: 0" data-target="#myModal" data-toggle="modal">新增软件环境</button>
+            </div>
         </div>
         <table id="sfListTable" ></table>
     </div>
-
 </div>
 </body>
 <script>
@@ -176,6 +208,42 @@
         $("#input_sfverison").val(sfverison)
         oldsfname=sfname
         oldsfversion=sfverison
+    }
+    function getpeoplenum() {
+        $.ajax({
+            type: "GET",
+            url: "/getpeoplenum",
+            success: function (result) {
+                if(result["code"]=="ok"){
+                    $("#input_peoplenum").val(result["num"])
+                }else{
+                    alert("错误");
+                }
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
+    }
+    function updatepeoplenum() {
+        $.ajax({
+            type: "POST",
+            url: "/updatepeoplenum",
+            data:{
+                newpeoplenum: $("#input_peoplenum").val(),
+            },
+            success: function (result) {
+                if(result["code"]=="ok"){
+                    alert("成功");
+                    $("#myModal2").modal('hide');
+                }else{
+                    alert("错误");
+                }
+            },
+            error: function () {
+                alert("错误");
+            }
+        });
     }
     function newsf() {
         $("#confirm").val(2)

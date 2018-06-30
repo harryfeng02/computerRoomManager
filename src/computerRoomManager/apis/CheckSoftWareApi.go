@@ -113,3 +113,44 @@ func NewSoftware(c *gin.Context) {
 		}
 	}
 }
+
+func Checkpeoplenum(c *gin.Context) {
+	mno:=isHaveSessions(c)
+	if(mno==""){
+		return
+	}
+	var num int
+	error:=db.MyDB.QueryRow("exec Checkpeoplenum @mno=?",mno).Scan(&num)
+	if(error!=nil){
+		fmt.Println("查询机房人数失败",error)
+		c.JSON(http.StatusOK, gin.H{
+			"code":"error",
+		})
+	}else {
+		c.JSON(http.StatusOK, gin.H{
+			"code":"ok",
+			"num":  num,
+		})
+		fmt.Println("查询机房人数成功",error)
+	}
+}
+
+func Updatepeoplenum(c *gin.Context) {
+	mno:=isHaveSessions(c)
+	if(mno==""){
+		return
+	}
+	num:=c.PostForm("newpeoplenum")
+	_,error:=db.MyDB.Exec("exec Updatepeoplenum @mno=?,@newpeoplenum=?",mno,num)
+	if(error!=nil){
+		fmt.Println("更新机房人数失败",error)
+		c.JSON(http.StatusOK, gin.H{
+			"code":"error",
+		})
+	}else {
+		c.JSON(http.StatusOK, gin.H{
+			"code":"ok",
+		})
+		fmt.Println("更新机房人数成功",error)
+	}
+}

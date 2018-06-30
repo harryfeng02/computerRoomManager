@@ -8,7 +8,6 @@ import (
 
 func isHaveSessions(c *gin.Context)(id string) {
 	session := sessions.Default(c)
-
 	v := session.Get("id")
 	if(v==nil){
 		c.Redirect(http.StatusMovedPermanently,"/")

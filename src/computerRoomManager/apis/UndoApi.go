@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"fmt"
+	"github.com/gin-contrib/sessions"
 )
 
 func Undo(c *gin.Context) {
@@ -14,7 +15,13 @@ func Undo(c *gin.Context) {
 	}
 	applyno := c.PostForm("applyno")
 	var temp=""
-	error:=db.MyDB.QueryRow("exec UndoCheck @applyno=?",applyno).Scan(&temp)
+	session := sessions.Default(c)
+	var error error
+	if(session.Get("flag").(string)=="m"){
+		error=db.MyDB.QueryRow("exec UndoManagerCheck @applyno=?",applyno).Scan(&temp)
+	}else {
+		error=db.MyDB.QueryRow("exec UndoCheck @applyno=?",applyno).Scan(&temp)
+	}
 	if(temp!=tno){
 		fmt.Println("tno与applyno的tno不相等",temp,error)
 		c.JSON(http.StatusOK, "false")
